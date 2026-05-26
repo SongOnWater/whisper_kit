@@ -17,6 +17,30 @@ class WhisperTranscribeResponse with _$WhisperTranscribeResponse {
 }
 
 @unfreezed
+class WhisperTranscribeWord with _$WhisperTranscribeWord {
+  factory WhisperTranscribeWord({
+    required String text,
+    @JsonKey(
+      name: 'from_ts',
+      fromJson: WhisperTranscribeWord._durationFromInt,
+    )
+    required Duration fromTs,
+    @JsonKey(
+      name: 'to_ts',
+      fromJson: WhisperTranscribeWord._durationFromInt,
+    )
+    required Duration toTs,
+  }) = _WhisperTranscribeWord;
+
+  factory WhisperTranscribeWord.fromJson(Map<String, dynamic> json) =>
+      _$WhisperTranscribeWordFromJson(json);
+
+  static Duration _durationFromInt(int timestamp) {
+    return Duration(milliseconds: timestamp * 10);
+  }
+}
+
+@unfreezed
 class WhisperTranscribeSegment with _$WhisperTranscribeSegment {
   ///
   factory WhisperTranscribeSegment({
@@ -31,6 +55,7 @@ class WhisperTranscribeSegment with _$WhisperTranscribeSegment {
     )
     required Duration toTs,
     required String text,
+    @Default(<WhisperTranscribeWord>[]) List<WhisperTranscribeWord> words,
   }) = _WhisperTranscribeSegment;
 
   /// Parse [json] to WhisperTranscribeSegment

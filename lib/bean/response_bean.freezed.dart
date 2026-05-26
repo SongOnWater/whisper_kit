@@ -206,6 +206,210 @@ abstract class _WhisperTranscribeResponse implements WhisperTranscribeResponse {
       get copyWith => throw _privateConstructorUsedError;
 }
 
+WhisperTranscribeWord _$WhisperTranscribeWordFromJson(
+    Map<String, dynamic> json) {
+  return _WhisperTranscribeWord.fromJson(json);
+}
+
+/// @nodoc
+mixin _$WhisperTranscribeWord {
+  String get text => throw _privateConstructorUsedError;
+  set text(String value) => throw _privateConstructorUsedError;
+  @JsonKey(name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  Duration get fromTs => throw _privateConstructorUsedError;
+  @JsonKey(name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  set fromTs(Duration value) => throw _privateConstructorUsedError;
+  @JsonKey(name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  Duration get toTs => throw _privateConstructorUsedError;
+  @JsonKey(name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  set toTs(Duration value) => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $WhisperTranscribeWordCopyWith<WhisperTranscribeWord> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $WhisperTranscribeWordCopyWith<$Res> {
+  factory $WhisperTranscribeWordCopyWith(WhisperTranscribeWord value,
+      $Res Function(WhisperTranscribeWord) then) =
+      _$WhisperTranscribeWordCopyWithImpl<$Res, WhisperTranscribeWord>;
+  @useResult
+  $Res call(
+      {String text,
+      @JsonKey(
+          name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+      Duration fromTs,
+      @JsonKey(
+          name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+      Duration toTs});
+}
+
+/// @nodoc
+class _$WhisperTranscribeWordCopyWithImpl<$Res,
+        $Val extends WhisperTranscribeWord>
+    implements $WhisperTranscribeWordCopyWith<$Res> {
+  _$WhisperTranscribeWordCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? text = null,
+    Object? fromTs = null,
+    Object? toTs = null,
+  }) {
+    return _then(_value.copyWith(
+      text: null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+      fromTs: null == fromTs
+          ? _value.fromTs
+          : fromTs // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      toTs: null == toTs
+          ? _value.toTs
+          : toTs // ignore: cast_nullable_to_non_nullable
+              as Duration,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$WhisperTranscribeWordImplCopyWith<$Res>
+    implements $WhisperTranscribeWordCopyWith<$Res> {
+  factory _$$WhisperTranscribeWordImplCopyWith(
+          _$WhisperTranscribeWordImpl value,
+          $Res Function(_$WhisperTranscribeWordImpl) then) =
+      __$$WhisperTranscribeWordImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String text,
+      @JsonKey(
+          name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+      Duration fromTs,
+      @JsonKey(
+          name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+      Duration toTs});
+}
+
+/// @nodoc
+class __$$WhisperTranscribeWordImplCopyWithImpl<$Res>
+    extends _$WhisperTranscribeWordCopyWithImpl<$Res,
+        _$WhisperTranscribeWordImpl>
+    implements _$$WhisperTranscribeWordImplCopyWith<$Res> {
+  __$$WhisperTranscribeWordImplCopyWithImpl(
+      _$WhisperTranscribeWordImpl _value,
+      $Res Function(_$WhisperTranscribeWordImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? text = null,
+    Object? fromTs = null,
+    Object? toTs = null,
+  }) {
+    return _then(_$WhisperTranscribeWordImpl(
+      text: null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+      fromTs: null == fromTs
+          ? _value.fromTs
+          : fromTs // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      toTs: null == toTs
+          ? _value.toTs
+          : toTs // ignore: cast_nullable_to_non_nullable
+              as Duration,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$WhisperTranscribeWordImpl implements _WhisperTranscribeWord {
+  _$WhisperTranscribeWordImpl(
+      {required this.text,
+      @JsonKey(
+          name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+      required this.fromTs,
+      @JsonKey(
+          name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+      required this.toTs});
+
+  factory _$WhisperTranscribeWordImpl.fromJson(Map<String, dynamic> json) =>
+      _$$WhisperTranscribeWordImplFromJson(json);
+
+  @override
+  String text;
+  @override
+  @JsonKey(name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  Duration fromTs;
+  @override
+  @JsonKey(name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  Duration toTs;
+
+  @override
+  String toString() {
+    return 'WhisperTranscribeWord(text: $text, fromTs: $fromTs, toTs: $toTs)';
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$WhisperTranscribeWordImplCopyWith<_$WhisperTranscribeWordImpl>
+      get copyWith => __$$WhisperTranscribeWordImplCopyWithImpl<
+          _$WhisperTranscribeWordImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$WhisperTranscribeWordImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _WhisperTranscribeWord implements WhisperTranscribeWord {
+  factory _WhisperTranscribeWord(
+      {required String text,
+      @JsonKey(
+          name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+      required Duration fromTs,
+      @JsonKey(
+          name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+      required Duration toTs}) = _$WhisperTranscribeWordImpl;
+
+  factory _WhisperTranscribeWord.fromJson(Map<String, dynamic> json) =
+      _$WhisperTranscribeWordImpl.fromJson;
+
+  @override
+  String get text;
+  set text(String value);
+  @override
+  @JsonKey(name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  Duration get fromTs;
+  @JsonKey(name: 'from_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  set fromTs(Duration value);
+  @override
+  @JsonKey(name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  Duration get toTs;
+  @JsonKey(name: 'to_ts', fromJson: WhisperTranscribeWord._durationFromInt)
+  set toTs(Duration value);
+  @override
+  @JsonKey(ignore: true)
+  _$$WhisperTranscribeWordImplCopyWith<_$WhisperTranscribeWordImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
 WhisperTranscribeSegment _$WhisperTranscribeSegmentFromJson(
     Map<String, dynamic> json) {
   return _WhisperTranscribeSegment.fromJson(json);
@@ -223,6 +427,9 @@ mixin _$WhisperTranscribeSegment {
   set toTs(Duration value) => throw _privateConstructorUsedError;
   String get text => throw _privateConstructorUsedError;
   set text(String value) => throw _privateConstructorUsedError;
+  List<WhisperTranscribeWord> get words => throw _privateConstructorUsedError;
+  set words(List<WhisperTranscribeWord> value) =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -243,7 +450,8 @@ abstract class $WhisperTranscribeSegmentCopyWith<$Res> {
       @JsonKey(
           name: 'to_ts', fromJson: WhisperTranscribeSegment._durationFromInt)
       Duration toTs,
-      String text});
+      String text,
+      List<WhisperTranscribeWord> words});
 }
 
 /// @nodoc
@@ -263,6 +471,7 @@ class _$WhisperTranscribeSegmentCopyWithImpl<$Res,
     Object? fromTs = null,
     Object? toTs = null,
     Object? text = null,
+    Object? words = null,
   }) {
     return _then(_value.copyWith(
       fromTs: null == fromTs
@@ -277,6 +486,10 @@ class _$WhisperTranscribeSegmentCopyWithImpl<$Res,
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
+      words: null == words
+          ? _value.words
+          : words // ignore: cast_nullable_to_non_nullable
+              as List<WhisperTranscribeWord>,
     ) as $Val);
   }
 }
@@ -297,7 +510,8 @@ abstract class _$$WhisperTranscribeSegmentImplCopyWith<$Res>
       @JsonKey(
           name: 'to_ts', fromJson: WhisperTranscribeSegment._durationFromInt)
       Duration toTs,
-      String text});
+      String text,
+      List<WhisperTranscribeWord> words});
 }
 
 /// @nodoc
@@ -316,6 +530,7 @@ class __$$WhisperTranscribeSegmentImplCopyWithImpl<$Res>
     Object? fromTs = null,
     Object? toTs = null,
     Object? text = null,
+    Object? words = null,
   }) {
     return _then(_$WhisperTranscribeSegmentImpl(
       fromTs: null == fromTs
@@ -330,6 +545,10 @@ class __$$WhisperTranscribeSegmentImplCopyWithImpl<$Res>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
+      words: null == words
+          ? _value.words
+          : words // ignore: cast_nullable_to_non_nullable
+              as List<WhisperTranscribeWord>,
     ));
   }
 }
@@ -344,7 +563,8 @@ class _$WhisperTranscribeSegmentImpl implements _WhisperTranscribeSegment {
       @JsonKey(
           name: 'to_ts', fromJson: WhisperTranscribeSegment._durationFromInt)
       required this.toTs,
-      required this.text});
+      required this.text,
+      this.words = const <WhisperTranscribeWord>[]});
 
   factory _$WhisperTranscribeSegmentImpl.fromJson(Map<String, dynamic> json) =>
       _$$WhisperTranscribeSegmentImplFromJson(json);
@@ -357,10 +577,12 @@ class _$WhisperTranscribeSegmentImpl implements _WhisperTranscribeSegment {
   Duration toTs;
   @override
   String text;
+  @override
+  List<WhisperTranscribeWord> words;
 
   @override
   String toString() {
-    return 'WhisperTranscribeSegment(fromTs: $fromTs, toTs: $toTs, text: $text)';
+    return 'WhisperTranscribeSegment(fromTs: $fromTs, toTs: $toTs, text: $text, words: $words)';
   }
 
   @JsonKey(ignore: true)
@@ -386,7 +608,9 @@ abstract class _WhisperTranscribeSegment implements WhisperTranscribeSegment {
       @JsonKey(
           name: 'to_ts', fromJson: WhisperTranscribeSegment._durationFromInt)
       required Duration toTs,
-      required String text}) = _$WhisperTranscribeSegmentImpl;
+      required String text,
+      List<WhisperTranscribeWord> words}) =
+      _$WhisperTranscribeSegmentImpl;
 
   factory _WhisperTranscribeSegment.fromJson(Map<String, dynamic> json) =
       _$WhisperTranscribeSegmentImpl.fromJson;
@@ -404,6 +628,9 @@ abstract class _WhisperTranscribeSegment implements WhisperTranscribeSegment {
   @override
   String get text;
   set text(String value);
+  @override
+  List<WhisperTranscribeWord> get words;
+  set words(List<WhisperTranscribeWord> value);
   @override
   @JsonKey(ignore: true)
   _$$WhisperTranscribeSegmentImplCopyWith<_$WhisperTranscribeSegmentImpl>

@@ -38,6 +38,8 @@ mixin _$TranscribeRequest {
   set nProcessors(int value) => throw _privateConstructorUsedError;
   bool get splitOnWord => throw _privateConstructorUsedError;
   set splitOnWord(bool value) => throw _privateConstructorUsedError;
+  int get maxLen => throw _privateConstructorUsedError;
+  set maxLen(int value) => throw _privateConstructorUsedError;
   bool get noFallback => throw _privateConstructorUsedError;
   set noFallback(bool value) => throw _privateConstructorUsedError;
   bool get diarize => throw _privateConstructorUsedError;
@@ -67,6 +69,7 @@ abstract class $TranscribeRequestCopyWith<$Res> {
       bool isNoTimestamps,
       int nProcessors,
       bool splitOnWord,
+      int maxLen,
       bool noFallback,
       bool diarize,
       bool speedUp});
@@ -94,6 +97,7 @@ class _$TranscribeRequestCopyWithImpl<$Res, $Val extends TranscribeRequest>
     Object? isNoTimestamps = null,
     Object? nProcessors = null,
     Object? splitOnWord = null,
+    Object? maxLen = null,
     Object? noFallback = null,
     Object? diarize = null,
     Object? speedUp = null,
@@ -135,6 +139,10 @@ class _$TranscribeRequestCopyWithImpl<$Res, $Val extends TranscribeRequest>
           ? _value.splitOnWord
           : splitOnWord // ignore: cast_nullable_to_non_nullable
               as bool,
+      maxLen: null == maxLen
+          ? _value.maxLen
+          : maxLen // ignore: cast_nullable_to_non_nullable
+              as int,
       noFallback: null == noFallback
           ? _value.noFallback
           : noFallback // ignore: cast_nullable_to_non_nullable
@@ -169,6 +177,7 @@ abstract class _$$TranscribeRequestImplCopyWith<$Res>
       bool isNoTimestamps,
       int nProcessors,
       bool splitOnWord,
+      int maxLen,
       bool noFallback,
       bool diarize,
       bool speedUp});
@@ -194,6 +203,7 @@ class __$$TranscribeRequestImplCopyWithImpl<$Res>
     Object? isNoTimestamps = null,
     Object? nProcessors = null,
     Object? splitOnWord = null,
+    Object? maxLen = null,
     Object? noFallback = null,
     Object? diarize = null,
     Object? speedUp = null,
@@ -235,6 +245,10 @@ class __$$TranscribeRequestImplCopyWithImpl<$Res>
           ? _value.splitOnWord
           : splitOnWord // ignore: cast_nullable_to_non_nullable
               as bool,
+      maxLen: null == maxLen
+          ? _value.maxLen
+          : maxLen // ignore: cast_nullable_to_non_nullable
+              as int,
       noFallback: null == noFallback
           ? _value.noFallback
           : noFallback // ignore: cast_nullable_to_non_nullable
@@ -264,6 +278,7 @@ class _$TranscribeRequestImpl implements _TranscribeRequest {
       this.isNoTimestamps = false,
       this.nProcessors = 1,
       this.splitOnWord = false,
+      this.maxLen = 0,
       this.noFallback = false,
       this.diarize = false,
       this.speedUp = false});
@@ -299,6 +314,9 @@ class _$TranscribeRequestImpl implements _TranscribeRequest {
   bool splitOnWord;
   @override
   @JsonKey()
+  int maxLen;
+  @override
+  @JsonKey()
   bool noFallback;
   @override
   @JsonKey()
@@ -309,7 +327,7 @@ class _$TranscribeRequestImpl implements _TranscribeRequest {
 
   @override
   String toString() {
-    return 'TranscribeRequest(audio: $audio, isTranslate: $isTranslate, threads: $threads, isVerbose: $isVerbose, language: $language, isSpecialTokens: $isSpecialTokens, isNoTimestamps: $isNoTimestamps, nProcessors: $nProcessors, splitOnWord: $splitOnWord, noFallback: $noFallback, diarize: $diarize, speedUp: $speedUp)';
+    return 'TranscribeRequest(audio: $audio, isTranslate: $isTranslate, threads: $threads, isVerbose: $isVerbose, language: $language, isSpecialTokens: $isSpecialTokens, isNoTimestamps: $isNoTimestamps, nProcessors: $nProcessors, splitOnWord: $splitOnWord, maxLen: $maxLen, noFallback: $noFallback, diarize: $diarize, speedUp: $speedUp)';
   }
 
   @JsonKey(ignore: true)
@@ -338,6 +356,7 @@ abstract class _TranscribeRequest implements TranscribeRequest {
       bool isNoTimestamps,
       int nProcessors,
       bool splitOnWord,
+      int maxLen,
       bool noFallback,
       bool diarize,
       bool speedUp}) = _$TranscribeRequestImpl;
@@ -372,6 +391,9 @@ abstract class _TranscribeRequest implements TranscribeRequest {
   @override
   bool get splitOnWord;
   set splitOnWord(bool value);
+  @override
+  int get maxLen;
+  set maxLen(int value);
   @override
   bool get noFallback;
   set noFallback(bool value);

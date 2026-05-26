@@ -261,6 +261,57 @@ json transcribe(json jsonBody) noexcept
                     jsonSegment["to_ts"] = t1;
                     jsonSegment["text"] = text;
 
+                    if (params.split_on_word) {
+                        const int n_tokens = whisper_full_n_tokens(ctx, i);
+                        if (n_tokens > 0) {
+                            std::vector<json> wordJson;
+                            std::string curWord;
+                            int64_t wStart = -1;
+                            int64_t wEnd = -1;
+
+                            for (int j = 0; j < n_tokens; j++) {
+                                const char *t = whisper_full_get_token_text(ctx, i, j);
+                                whisper_token_data td = whisper_full_get_token_data(ctx, i, j);
+
+                                if (td.id >= whisper_token_eot(ctx)) continue;
+
+                                std::string ts(t);
+
+                                if (!curWord.empty() && !ts.empty() && ts[0] == ' ') {
+                                    json wo;
+                                    wo["text"] = curWord;
+                                    wo["from_ts"] = wStart;
+                                    wo["to_ts"] = wEnd;
+                                    wordJson.push_back(wo);
+                                    curWord = ts;
+                                    wStart = td.t0;
+                                    wEnd = td.t1;
+                                } else {
+                                    if (curWord.empty()) {
+                                        curWord = ts;
+                                        wStart = td.t0;
+                                        wEnd = td.t1;
+                                    } else {
+                                        curWord += ts;
+                                        wEnd = td.t1;
+                                    }
+                                }
+                            }
+
+                            if (!curWord.empty()) {
+                                json wo;
+                                wo["text"] = curWord;
+                                wo["from_ts"] = wStart;
+                                wo["to_ts"] = wEnd;
+                                wordJson.push_back(wo);
+                            }
+
+                            if (!wordJson.empty()) {
+                                jsonSegment["words"] = wordJson;
+                            }
+                        }
+                    }
+
                     segmentsJson.push_back(jsonSegment);
                 }
             }

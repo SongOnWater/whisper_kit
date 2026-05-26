@@ -25,6 +25,24 @@ Map<String, dynamic> _$$WhisperTranscribeResponseImplToJson(
       'segments': instance.segments,
     };
 
+_$WhisperTranscribeWordImpl _$$WhisperTranscribeWordImplFromJson(
+        Map<String, dynamic> json) =>
+    _$WhisperTranscribeWordImpl(
+      text: json['text'] as String,
+      fromTs: WhisperTranscribeWord._durationFromInt(
+          (json['from_ts'] as num).toInt()),
+      toTs: WhisperTranscribeWord._durationFromInt(
+          (json['to_ts'] as num).toInt()),
+    );
+
+Map<String, dynamic> _$$WhisperTranscribeWordImplToJson(
+        _$WhisperTranscribeWordImpl instance) =>
+    <String, dynamic>{
+      'text': instance.text,
+      'from_ts': instance.fromTs.inMicroseconds,
+      'to_ts': instance.toTs.inMicroseconds,
+    };
+
 _$WhisperTranscribeSegmentImpl _$$WhisperTranscribeSegmentImplFromJson(
         Map<String, dynamic> json) =>
     _$WhisperTranscribeSegmentImpl(
@@ -33,6 +51,11 @@ _$WhisperTranscribeSegmentImpl _$$WhisperTranscribeSegmentImplFromJson(
       toTs: WhisperTranscribeSegment._durationFromInt(
           (json['to_ts'] as num).toInt()),
       text: json['text'] as String,
+      words: (json['words'] as List<dynamic>?)
+              ?.map((e) =>
+                  WhisperTranscribeWord.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          <WhisperTranscribeWord>[],
     );
 
 Map<String, dynamic> _$$WhisperTranscribeSegmentImplToJson(
@@ -41,6 +64,7 @@ Map<String, dynamic> _$$WhisperTranscribeSegmentImplToJson(
       'from_ts': instance.fromTs.inMicroseconds,
       'to_ts': instance.toTs.inMicroseconds,
       'text': instance.text,
+      'words': instance.words,
     };
 
 _$WhisperVersionResponseImpl _$$WhisperVersionResponseImplFromJson(

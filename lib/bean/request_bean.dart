@@ -18,6 +18,7 @@ class TranscribeRequest with _$TranscribeRequest {
     @Default(false) bool isNoTimestamps,
     @Default(1) int nProcessors,
     @Default(false) bool splitOnWord,
+    @Default(0) int maxLen,
     @Default(false) bool noFallback,
     @Default(false) bool diarize,
     @Default(false) bool speedUp,
