@@ -17,9 +17,14 @@
 
 using json = nlohmann::json;
 
-char *jsonToChar(const json &jsonData) noexcept
+char *jsonToChar(const json &jsonData)
 {
-    std::string result = jsonData.dump();
+    std::string result;
+    try {
+        result = jsonData.dump();
+    } catch (...) {
+        return nullptr;
+    }
     char *ch = static_cast<char *>(std::malloc(result.size() + 1));
     if (ch == nullptr)
     {

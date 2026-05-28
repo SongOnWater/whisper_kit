@@ -17,9 +17,12 @@
 
 using json = nlohmann::json;
 
-char *jsonToChar(const json &jsonData) noexcept
+char *jsonToChar(const json &jsonData)
 {
-    std::string result = jsonData.dump();
+    // Use replace error handler so invalid UTF-8 bytes (e.g. 0xA7 from
+    // whisper output) are replaced with U+FFFD instead of throwing.
+    std::string result = jsonData.dump(-1, ' ', false,
+        nlohmann::json::error_handler_t::replace);
     char *ch = static_cast<char *>(std::malloc(result.size() + 1));
     if (ch == nullptr)
     {
@@ -214,8 +217,10 @@ json transcribe(json jsonBody) noexcept
         wparams.tdrz_enable = params.diarize;
 
         if (params.split_on_word) {
-            wparams.max_len = 1;
+            wparams.max_len = params.max_len;
             wparams.token_timestamps = true;
+        } else if (params.max_len > 0) {
+            wparams.max_len = params.max_len;
         }
 
         const int rc = params.n_processors > 1
