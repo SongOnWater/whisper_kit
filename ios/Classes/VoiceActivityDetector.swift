@@ -188,7 +188,7 @@ class VoiceActivityDetector: NSObject {
     /// Reset VAD state
     func reset() {
         processingQueue.async { [self] in
-            self.currentState = .silence
+            self.self.currentState = .silence
             self.speechStartTime = nil
             self.lastSpeechTime = nil
             self.consecutiveSpeechFrames = 0
@@ -291,7 +291,7 @@ class VoiceActivityDetector: NSObject {
     }
 
     private func processVADResult(_ result: VADResult) {
-        let previousState = currentState
+        let previousState = self.currentState
         let currentTime = result.timestamp
 
         // Update counters
@@ -300,41 +300,41 @@ class VoiceActivityDetector: NSObject {
             consecutiveSilenceFrames = 0
             lastSpeechTime = currentTime
 
-            if currentState == .silence {
-                currentState = .possibleSpeech
-            } else if currentState == .possibleSpeech && consecutiveSpeechFrames >= 2 {
-                currentState = .speech
+            if self.currentState == .silence {
+                self.currentState = .possibleSpeech
+            } else if self.currentState == .possibleSpeech && consecutiveSpeechFrames >= 2 {
+                self.currentState = .speech
                 speechStartTime = currentTime
                 DispatchQueue.main.async { [self] in
                     self.delegate?.vadDetector(self, didDetectSpeechStart: currentTime)
                 }
-            } else if currentState == .possibleSilence {
-                currentState = .speech
+            } else if self.currentState == .possibleSilence {
+                self.currentState = .speech
             }
         } else {
             consecutiveSilenceFrames += 1
             consecutiveSpeechFrames = 0
 
-            if currentState == .speech {
-                currentState = .possibleSilence
-            } else if currentState == .possibleSilence && consecutiveSilenceFrames >= 3 {
-                currentState = .extendedSilence
+            if self.currentState == .speech {
+                self.currentState = .possibleSilence
+            } else if self.currentState == .possibleSilence && consecutiveSilenceFrames >= 3 {
+                self.currentState = .extendedSilence
                 if let startTime = speechStartTime {
                     DispatchQueue.main.async { [self] in
                         self.delegate?.vadDetector(self, didDetectSpeechEnd: currentTime)
                     }
                 }
                 speechStartTime = nil
-            } else if currentState == .possibleSpeech {
-                currentState = .silence
-            } else if currentState == .extendedSilence {
-                currentState = .silence
+            } else if self.currentState == .possibleSpeech {
+                self.currentState = .silence
+            } else if self.currentState == .extendedSilence {
+                self.currentState = .silence
             }
         }
 
         // Notify state change
-        if previousState != currentState {
-            logger.debug("VAD state changed: \(previousState.description) -> \(currentState.description)")
+        if previousState != self.currentState {
+            logger.debug("VAD state changed: \(previousState.description) -> \(self.currentState.description)")
             DispatchQueue.main.async { [self] in
                 self.delegate?.vadDetector(self, didUpdateState: self.currentState)
             }
@@ -386,12 +386,13 @@ class VoiceActivityDetector: NSObject {
 
         // Copy samples to temp buffer
         paddedSamples.withUnsafeBufferPointer { buffer in
-            tempBuffer.initialize(from: buffer)
+            tempBuffer.assign(from: buffer.baseAddress!, count: buffer.count)
         }
 
         // Perform FFT
-        vDSP_fft_zrip(vDSP_create_fftsetup(vDSP_Length(log2(Double(fftSize))), FFTRadix(kFFTRadix2))!,
-                      &splitComplex, 1, vDSP_Length(log2(Double(fftSize))))
+        let fftSetup = vDSP_create_fftsetup(vDSP_Length(log2(Double(fftSize))), FFTRadix(kFFTRadix2))!
+        vDSP_fft_zrip(fftSetup,
+                      &splitComplex, vDSP_Stride(1), vDSP_Length(log2(Double(fftSize))), FFTDirection(kFFTDirection_Forward))
 
         // Calculate magnitude spectrum
         var magnitudes = [Float](repeating: 0.0, count: fftSize / 2)
@@ -518,7 +519,7 @@ struct VADStatistics {
     var description: String {
         return """
         VAD Statistics:
-        State: \(currentState.description)
+        State: \(self.currentState.description)
         Energy Threshold: \(String(format: "%.4f", energyThreshold))
         ZCR Threshold: \(String(format: "%.4f", zcrThreshold))
         Spectral Threshold: \(String(format: "%.4f", spectralThreshold))
