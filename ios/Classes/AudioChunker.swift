@@ -1,5 +1,6 @@
 import Foundation
 import AVFoundation
+import Accelerate
 import os.log
 
 // MARK: - Audio Chunking Configuration
@@ -258,7 +259,7 @@ class AudioChunker: NSObject {
             averageChunkDuration: chunks.isEmpty ? 0.0 : processedDuration / Double(chunks.count),
             speechChunks: chunks.filter { $0.hasSpeech }.count,
             silenceChunks: chunks.filter { $0.chunkType == .silence }.count,
-            processingProgress: totalDuration > 0 ? processedDuration / totalDuration : 0.0
+            processingProgress: totalDuration > 0 ? Float(processedDuration / totalDuration) : 0
         )
     }
 
@@ -369,7 +370,7 @@ class AudioChunker: NSObject {
 
         // Calculate audio level
         var sum: Float = 0.0
-        vDSP_vsq(samples, 1, &sum, vDSP_Length(samples.count))
+        sum = vDSP.sumOfSquares(samples)
         let rmsLevel = sqrt(sum / Float(samples.count))
 
         // Zero crossing rate

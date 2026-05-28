@@ -5,7 +5,7 @@ import os.log
 
 // MARK: - WhisperKitPlugin Enhanced Audio Extension
 
-extension WhisperKitPlugin {
+extension WhisperKitPlugin: EnhancedAudioManagerDelegate {
 
     // MARK: - Enhanced Audio Methods
 
@@ -119,24 +119,22 @@ extension WhisperKitPlugin {
             to: outputURL,
             settings: settings,
             progressHandler: { progress in
-                // Send progress updates via a separate channel or as periodic callbacks
                 self.logger.info("Audio conversion progress: \(progress * 100)%")
-            },
-            completionHandler: { conversionResult in
-                DispatchQueue.main.async {
-                    switch conversionResult {
-                    case .success(let url):
-                        result([
-                            "success": true,
-                            "outputPath": url.path,
-                            "format": audioFormat.fileExtension
-                        ])
-                    case .failure(let error):
-                        result(FlutterError(code: "CONVERSION_ERROR", message: error.localizedDescription, details: nil))
-                    }
+            }
+        ) { conversionResult in
+            DispatchQueue.main.async {
+                switch conversionResult {
+                case .success(let url):
+                    result([
+                        "success": true,
+                        "outputPath": url.path,
+                        "format": audioFormat.fileExtension
+                    ])
+                case .failure(let error):
+                    result(FlutterError(code: "CONVERSION_ERROR", message: error.localizedDescription, details: nil))
                 }
             }
-        )
+        }
     }
 
     func analyzeAudioQuality(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -149,7 +147,10 @@ extension WhisperKitPlugin {
         }
 
         let audioURL = URL(fileURLWithPath: audioPath)
-        let metadata = formatConverter.getAudioMetadata(url: audioURL)
+        guard let metadata = formatConverter.getAudioMetadata(url: audioURL) else {
+            result(FlutterError(code: "METADATA_ERROR", message: "Unable to read audio metadata", details: nil))
+            return
+        }
 
         do {
             let audioFile = try AVAudioFile(forReading: audioURL)
@@ -286,17 +287,11 @@ extension WhisperKitPlugin {
 
     private func parsePreprocessingSettings(from dict: [String: Any]) -> AudioPreprocessingSettings {
         let qualityString = dict["quality"] as? String ?? "default"
-        let quality: AudioPreprocessingSettings.AudioQuality
-
         switch qualityString.lowercased() {
-        case "minimal": quality = .minimal
-        case "aggressive": quality = .aggressive
-        default: quality = .default
+        case "minimal": return .minimal
+        case "aggressive": return .aggressive
+        default: return .default
         }
-
-        return quality == .default ? AudioPreprocessingSettings.default :
-               quality == .minimal ? AudioPreprocessingSettings.minimal :
-               AudioPreprocessingSettings.aggressive
     }
 
     private func parseVADConfiguration(from dict: [String: Any]) -> VADConfiguration {
@@ -394,6 +389,36 @@ extension WhisperKitPlugin {
             "fileSizeDescription": metadata.fileSizeDescription,
             "format": metadata.format.fileExtension
         ]
+    }
+
+    // MARK: - EnhancedAudioManagerDelegate
+
+    func audioManager(_ manager: EnhancedAudioManager, didStartProcessing startTime: TimeInterval) {
+        logger.info("Enhanced audio processing started at \(startTime)")
+    }
+
+    func audioManager(_ manager: EnhancedAudioManager, didProcessChunk chunk: AudioChunk, transcription: TranscriptionResult?) {
+        logger.info("Enhanced audio chunk processed")
+    }
+
+    func audioManager(_ manager: EnhancedAudioManager, didDetectVoiceActivity isActive: Bool, timestamp: TimeInterval) {
+        logger.info("Voice activity: \(isActive) at \(timestamp)")
+    }
+
+    func audioManager(_ manager: EnhancedAudioManager, didUpdateProgress progress: Float) {
+        logger.info("Enhanced audio progress: \(progress * 100)%")
+    }
+
+    func audioManager(_ manager: EnhancedAudioManager, didCompleteProcessing finalResult: EnhancedAudioResult) {
+        logger.info("Enhanced audio processing completed")
+    }
+
+    func audioManager(_ manager: EnhancedAudioManager, didEncounterError error: Error) {
+        logger.error("Enhanced audio error: \(error.localizedDescription)")
+    }
+
+    func audioManager(_ manager: EnhancedAudioManager, didChangeQuality quality: AudioQuality) {
+        logger.info("Audio quality changed to \(quality.description)")
     }
 }
 

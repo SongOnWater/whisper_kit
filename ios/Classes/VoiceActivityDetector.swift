@@ -159,14 +159,14 @@ class VoiceActivityDetector: NSObject {
         super.init()
 
         setupThresholds()
-        logger.info("VAD initialized with frame size: \(frameSize), sample rate: \(sampleRate)")
+        logger.info("VAD initialized with frame size: \(self.frameSize), sample rate: \(self.sampleRate)")
     }
 
     // MARK: - Public Interface
 
     /// Process audio frame for voice activity detection
     func processAudioFrame(_ audioData: Data, timestamp: TimeInterval = Date().timeIntervalSince1970) {
-        processingQueue.async {
+        processingQueue.async { [self] in
             let result = self.detectVoiceActivity(audioData: audioData, timestamp: timestamp)
             self.processVADResult(result)
         }
@@ -187,7 +187,7 @@ class VoiceActivityDetector: NSObject {
 
     /// Reset VAD state
     func reset() {
-        processingQueue.async {
+        processingQueue.async { [self] in
             self.currentState = .silence
             self.speechStartTime = nil
             self.lastSpeechTime = nil
@@ -202,7 +202,7 @@ class VoiceActivityDetector: NSObject {
 
     /// Update VAD configuration
     func updateConfiguration(_ newConfiguration: VADConfiguration) {
-        processingQueue.async {
+        processingQueue.async { [self] in
             self.configuration = newConfiguration
             self.setupThresholds()
             self.logger.info("VAD configuration updated")
@@ -305,7 +305,7 @@ class VoiceActivityDetector: NSObject {
             } else if currentState == .possibleSpeech && consecutiveSpeechFrames >= 2 {
                 currentState = .speech
                 speechStartTime = currentTime
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [self] in
                     self.delegate?.vadDetector(self, didDetectSpeechStart: currentTime)
                 }
             } else if currentState == .possibleSilence {
@@ -320,7 +320,7 @@ class VoiceActivityDetector: NSObject {
             } else if currentState == .possibleSilence && consecutiveSilenceFrames >= 3 {
                 currentState = .extendedSilence
                 if let startTime = speechStartTime {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [self] in
                         self.delegate?.vadDetector(self, didDetectSpeechEnd: currentTime)
                     }
                 }
@@ -335,13 +335,13 @@ class VoiceActivityDetector: NSObject {
         // Notify state change
         if previousState != currentState {
             logger.debug("VAD state changed: \(previousState.description) -> \(currentState.description)")
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 self.delegate?.vadDetector(self, didUpdateState: self.currentState)
             }
         }
 
         // Notify activity detection
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
             self.delegate?.vadDetector(self, didDetectActivity: result)
         }
     }
@@ -352,7 +352,7 @@ class VoiceActivityDetector: NSObject {
         guard !samples.isEmpty else { return 0.0 }
 
         var sum: Float = 0.0
-        vDSP_vsq(samples, 1, &sum, vDSP_Length(samples.count))
+        vDSP_vsq(samples, vDSP_Stride(1), &sum, vDSP_Stride(1), vDSP_Length(samples.count))
         return sqrt(sum / Float(samples.count))
     }
 

@@ -222,7 +222,10 @@ class EnhancedAudioManager: NSObject {
         }
 
         // Get audio metadata
-        let metadata = formatConverter.getAudioMetadata(url: url)
+        guard let metadata = formatConverter.getAudioMetadata(url: url) else {
+            completion(.failure(EnhancedAudioError.invalidAudioData))
+            return
+        }
 
         // Analyze audio quality
         do {
@@ -303,15 +306,22 @@ class EnhancedAudioManager: NSObject {
     }
 
     private func preprocessAudioData(_ data: Data) throws -> Data {
-        return try withUnsafeThrowingContinuation { continuation in
-            audioPreprocessor.preprocessAudioData(data) { result in
-                switch result {
-                case .success(let processedData):
-                    continuation.resume(returning: processedData)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
+        let semaphore = DispatchSemaphore(value: 0)
+        var result: Result<Data, Error>?
+
+        audioPreprocessor.preprocessAudioData(data) { res in
+            result = res
+            semaphore.signal()
+        }
+        semaphore.wait()
+
+        switch result {
+        case .success(let data):
+            return data
+        case .failure(let error):
+            throw error
+        case nil:
+            throw EnhancedAudioError.processingFailed
         }
     }
 

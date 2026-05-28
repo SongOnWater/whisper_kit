@@ -9,12 +9,12 @@ import Foundation
 func request(_ body: UnsafeMutablePointer<CChar>) -> UnsafeMutablePointer<CChar>?
 
 public class WhisperKitPlugin: NSObject, FlutterPlugin {
-  private let logger = Logger(subsystem: "com.whisper_kit", category: "Plugin")
+  let logger = Logger(subsystem: "com.whisper_kit", category: "Plugin")
   private let audioRecorder = AudioRecorder()
   private let permissionManager = PermissionManager()
   private let modelManager = ModelManager()
-  private let audioPreprocessor = AudioPreprocessor()
-  private let formatConverter = AudioFormatConverter()
+  let audioPreprocessor = AudioPreprocessor()
+  let formatConverter = AudioFormatConverter()
 
   // Enhanced audio processing
   var enhancedAudioManager: EnhancedAudioManager?
@@ -315,7 +315,7 @@ public class WhisperKitPlugin: NSObject, FlutterPlugin {
     let cString = jsonString.cString(using: .utf8)
     let mutableString = strdup(cString!)
 
-    guard let resultC = request(mutableString) else {
+    guard let resultC = request(mutableString!) else {
       logger.error("C++ request function returned nil")
       free(mutableString)
       return nil

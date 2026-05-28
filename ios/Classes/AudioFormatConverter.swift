@@ -168,8 +168,8 @@ class AudioFormatConverter: NSObject {
     func getAudioMetadata(url: URL) -> AudioMetadata? {
         let asset = AVURLAsset(url: url)
 
-        guard let duration = asset.duration.seconds,
-              duration > 0 else { return nil }
+        guard asset.duration.seconds > 0 else { return nil }
+        let duration = asset.duration.seconds
 
         var sampleRate: Double = 0
         var channelCount: Int = 0
@@ -178,15 +178,15 @@ class AudioFormatConverter: NSObject {
         if let audioTrack = asset.tracks(withMediaType: .audio).first {
             let formatDescriptions = audioTrack.formatDescriptions
             for formatDescription in formatDescriptions {
-                if let streamDescription = formatDescription.streamBasicDescription {
-                    sampleRate = streamDescription.pointee.mSampleRate
-                    channelCount = Int(streamDescription.pointee.mChannelsPerFrame)
+                if let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription as! CMAudioFormatDescription) {
+                    let desc = asbd.pointee
+                    sampleRate = desc.mSampleRate
+                    channelCount = Int(desc.mChannelsPerFrame)
                     break
                 }
             }
+            bitRate = Int(audioTrack.estimatedDataRate)
         }
-
-        bitRate = Int(asset.preferredTrackRate) // Approximation
 
         let fileSize = (try? FileManager.default.attributesOfItem(atPath: url.path)[.size] as? Int64) ?? 0
 
@@ -234,7 +234,7 @@ class AudioFormatConverter: NSObject {
             }
 
             // Configure converter
-            converter.bitRate = settings.bitRate
+            converter.bitRate = settings.bitRate ?? 0
             converter.sampleRateConverterQuality = .max
 
             // Perform conversion
@@ -340,7 +340,7 @@ class AudioFormatConverter: NSObject {
     private func createTargetFormat(settings: AudioConversionSettings) -> AVAudioFormat {
         switch settings.targetFormat {
         case .wav, .pcm:
-            return AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: settings.sampleRate, channels: settings.channelCount, interleaved: false)!
+            return AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: settings.sampleRate, channels: AVAudioChannelCount(settings.channelCount), interleaved: false)!
         case .m4a, .aac:
             return AVAudioFormat(settings: [
                 AVFormatIDKey: kAudioFormatMPEG4AAC,
@@ -362,7 +362,7 @@ class AudioFormatConverter: NSObject {
                 AVSampleRateKey: settings.sampleRate,
                 AVNumberOfChannelsKey: settings.channelCount,
                 AVLinearPCMBitDepthKey: settings.bitDepth,
-                AVEncoderAudioQualityKey: AudioQuality.lossless.rawValue
+                AVEncoderAudioQualityKey: AudioConversionSettings.AudioQuality.lossless.rawValue
             ])!
         case .ogg:
             return AVAudioFormat(settings: [
@@ -421,7 +421,7 @@ class AudioFormatConverter: NSObject {
     }
 
     private func createPCMBuffer(from data: Data, format: AVAudioFormat) throws -> AVAudioPCMBuffer {
-        let frameCount = AVAudioFrameCount(data.count / (format.streamDescription.pointee.mBytesPerFrame))
+        let frameCount = AVAudioFrameCount(data.count / Int(format.streamDescription.pointee.mBytesPerFrame))
         let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount)!
 
         if let floatChannelData = buffer.floatChannelData {
