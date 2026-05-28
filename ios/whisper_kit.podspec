@@ -9,7 +9,8 @@ A Flutter plugin for offline speech-to-text using whisper.cpp models implementat
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'CodeSagePath' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*', 'src/**/*.{h,cpp}'
+  s.source_files     = 'Classes/**/*', 'src/**/*.{h,c,cpp}'
+  s.static_framework = true
   s.dependency 'Flutter'
   s.platform = :ios, '12.0'
 

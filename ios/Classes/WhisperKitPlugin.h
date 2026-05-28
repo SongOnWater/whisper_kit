@@ -10,6 +10,3 @@
 @import whisper_kit.Swift;
 #endif
 #endif
-
-@interface WhisperKitPlugin : NSObject<FlutterPlugin>
-@end
